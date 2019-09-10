@@ -19,18 +19,57 @@ namespace HelloWorld
             //string description;
             //bool haveSeen;
 
-            while (true)
+            var quit = false;
+            while (!quit)
             {
                 char input = DisplayMenu ();
+                switch (input)
+                {
+                    //fallthrough if case is emput
+                    case 'a':
+                    case 'A': AddMovie (); break;
+
+                    //must include break/return at end of case
+                    case 'D': DisplayMovie (); break;
+                    case 'R': RemoveMovie (); break;
+                    case 'Q':
+                    {
+                        break;
+                    }
+                    default: Console.WriteLine ("Not supported"); break;
+                };
+              
                 if (input == 'A')
                     AddMovie ();
                 else if (input == 'D')
                     DisplayMovie ();
+                else if (input =='R')
+                    RemoveMovie();
                 else if (input == 'Q')
                     break;
+
+                //char input = DisplayMenu ();
+                //if (input == 'A')
+                //    AddMovie ();
+                //else if (input == 'D')
+                //    DisplayMovie ();
+                //else if (input =='R')
+                //    RemoveMovie ();
+                //else if (input == 'Q')
+                //   break;
             };
         }
 
+        private static void RemoveMovie()
+        {
+            //Confirm removal
+            //DO NOT do this == true, expression
+            if (ReadBoolean ($"Are you sure you want to remove {title}"))
+                return;
+
+            //Remove movie
+            title = null;
+        }
         static void AddMovie ()
         {
             //Get title
@@ -53,8 +92,14 @@ namespace HelloWorld
 
         static void DisplayMovie()
         {
-            //title, desc, release year, run length, hasSeen
+            //Display messagae if no movies
+            if(String.IsNullOrEmpty(title))
+            {
+                Console.WriteLine ("No Movies");
+                return;
+            }
 
+            //title, desc, release year, run length, hasSeen
             Console.WriteLine (title);
             Console.WriteLine (description);
 
@@ -71,7 +116,8 @@ namespace HelloWorld
 
             //4) String interpolation
             Console.WriteLine ($"Seen it? {hasSeen}");
-            //Console.WriteLine ("Seen it? " + hasSeen.ToString());
+
+            Console.WriteLine ("".PadLeft (50, '-'));
         }
 
         static int ReadInt32 ( string message )
@@ -102,11 +148,10 @@ namespace HelloWorld
 
                 bool result;
                 if (Boolean.TryParse (input, out result))
-
                     return result;
 
                 Console.WriteLine ("Not a boolean");
-            }
+            };
         }
 
         static char DisplayMenu ()
@@ -116,6 +161,7 @@ namespace HelloWorld
                 Console.WriteLine ("A)dd Movie");
                 Console.WriteLine ("D)isplay Movie");
                 Console.WriteLine ("Q)uit");
+                Console.WriteLine ("R)emove Movie");
 
                 string input = Console.ReadLine ();
 
@@ -123,7 +169,7 @@ namespace HelloWorld
                 input = input.ToLower();
                 //if (input == "A" || input == "a")
                 //if (input == "a")
-                if (String.Compare(input, "a", true) == 0)
+                if (String.Compare (input, "a", true) == 0)
                 {
                     return 'A';
                 } else if (input == "q")
@@ -131,6 +177,8 @@ namespace HelloWorld
                     return 'Q';
                 } else if (input == "d")
                     return 'D';
+                else if (input == "r")
+                    return 'R';
                 else
                 {
                     Console.WriteLine ("Invalid input");
@@ -191,6 +239,35 @@ namespace HelloWorld
             //string name = "Bob William Smith Jr. III";
             var name = "Bob William Smith Jr. III";
             string[] nameParts = name.Split(' ');
+
+
+        }
+
+        static void DemoString()
+        {
+            string str = null;
+
+            //checking for null
+            if (str != null )
+                str = str.ToLower ();
+
+            //checking for null or empty string
+            if (str != null && str != "")
+                str = str.ToLower ();
+
+            //Length - DO NOT
+            if (str != null && str.Length == 0)
+                str = str.ToLower ();
+
+            //Empty - DO NOT
+            if (str != null && str != String.Empty)
+                str = str.ToLower ();
+
+            //correct approach
+            if (!String.IsNullOrEmpty(str))
+                str = str.ToLower();
+
+
 
 
         }
