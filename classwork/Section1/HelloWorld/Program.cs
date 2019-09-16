@@ -9,15 +9,17 @@ namespace HelloWorld
 {
     class Program
     {
+        static string title;
+        static string description;
+        static int runLength;
+        static int releaseYear;
+        static bool hasSeen;
 
         static void Main ( /*string[] args*/ )
         {
-            //movie data
-            //string title;
-            //int runLength;
-            //int releaseYear;
-            //string description;
-            //bool haveSeen;
+           
+            // Do not declare global variable outside lab1
+
 
             var quit = false;
             while (!quit)
@@ -272,11 +274,6 @@ namespace HelloWorld
 
         }
 
-        // Do not declare global variable outside lab1
-        static string title;
-        static string description;
-        static int runLength;
-        static int releaseYear;
-        static bool hasSeen;
+        
     }
 }
