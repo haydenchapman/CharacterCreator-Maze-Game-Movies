@@ -30,21 +30,22 @@ namespace Itse1430.Maze
             Console.WriteLine ("Press 'Enter' to begin:");
             Console.ReadLine ();
             Console.Clear ();
-            s_directionFacing = 0;
+            s_directionFacing = 1;
             Room1 ();
         }
         static CardinalDirection Movement (AvailableCommand Command)
             {
             switch (Command)
             {
-                case AvailableCommand.MoveForward:
-                return (CardinalDirection)s_directionFacing;
-                case AvailableCommand.MoveBackward:
-                return (CardinalDirection)((s_directionFacing + 2 + 4) % 4);
+                
                 case AvailableCommand.MoveLeft:
                 return (CardinalDirection)((s_directionFacing - 1 + 4) % 4);
                 case AvailableCommand.MoveRight:
                 return (CardinalDirection)((s_directionFacing + 1 + 4) % 4);
+                case AvailableCommand.MoveBackward:
+                return (CardinalDirection)((s_directionFacing + 2 + 4) % 4);
+                case AvailableCommand.MoveForward:
+                return (CardinalDirection)s_directionFacing;
             }
             return (CardinalDirection)s_directionFacing;
         }
@@ -76,18 +77,18 @@ namespace Itse1430.Maze
                     case "move left":
                     return AvailableCommand.MoveLeft;
 
-                    case "look left":
-                    s_directionFacing = (s_directionFacing - 1 + 4) % 4;
+                    case "look right":
+                    s_directionFacing = (s_directionFacing + 1 + 5) % 5;
                     DisplayDirection ();
                     break;
 
-                    case "look right":
-                    s_directionFacing = (s_directionFacing + 1 + 4) % 4;
+                    case "look left":
+                    s_directionFacing = (s_directionFacing - 1 + 5) % 5;
                     DisplayDirection ();
                     break;
 
                     case "turn around":
-                    s_directionFacing = (s_directionFacing + 2 + 4) % 4;
+                    s_directionFacing = (s_directionFacing + 1 + 5) % 5;
                     break;
 
                     default:
@@ -100,10 +101,10 @@ namespace Itse1430.Maze
         }
         enum CardinalDirection
         {
-            North = 0,
-            East = 1,
-            South = 2,
-            West = 3,
+            North = 1,
+            East = 2,
+            South = 3,
+            West = 4,
         }
         enum AvailableCommand
         {
