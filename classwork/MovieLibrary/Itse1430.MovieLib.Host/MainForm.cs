@@ -10,8 +10,17 @@ namespace Itse1430.MovieLib.Host
         {
             InitializeComponent ();
 
-            var movie = new Movie();
-            movie = new Movie();
+            var movie = new Movie ();
+            movie = new Movie ();
+            movie.title = "Jaws";
+            //movie.description
+        }
+
+        private void AddToolStripMenuItem_Click ( object sender, EventArgs e )
+        {
+            var from = new MovieForm ();
+
+            from.ShowDialog ();
         }
     }
 }
