@@ -19,8 +19,17 @@ namespace Itse1430.MovieLib.Host
         private void AddToolStripMenuItem_Click ( object sender, EventArgs e )
         {
             var from = new MovieForm ();
+            //modeless - does not block main window
+            //form.Show();
+
+            //Show the new movie form modally
+            if (form.showDialog(this) == DialogResult.OK)
 
             from.ShowDialog ();
+            //true save it
+            _movie = form.Movie;
         }
+
+        private Movie _movie;
     }
 }
