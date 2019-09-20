@@ -11,6 +11,7 @@ namespace Itse1430.Maze
     class Program
     {
         private static int s_directionFacing;
+
         static void Main ( string[] args )
         {
             Console.WriteLine ("".PadLeft (45, '-'));
@@ -30,14 +31,31 @@ namespace Itse1430.Maze
             Console.WriteLine ("Press 'Enter' to begin:");
             Console.ReadLine ();
             Console.Clear ();
-            s_directionFacing = 1;
             Room1 ();
+        }
+
+        enum CardinalDirection //assigns numeric value to directionFacing
+        {
+            North = 0,
+            East = 1,
+            South = 2,
+            West = 3,
+        }
+        enum AvailableCommand //assigns numeric value to the available movements
+        {
+            MoveForward = 2,
+            MoveBackward = 3,
+            MoveLeft = 4,
+            MoveRight = 5,
+            Quit = 1
         }
         static CardinalDirection Movement (AvailableCommand Command)
             {
+            string QuitOption;
             switch (Command)
             {
-                
+                //boundry case defined in offset from directionsFacing
+                //modulus ensures value is always between 0-3
                 case AvailableCommand.MoveLeft:
                 return (CardinalDirection)((s_directionFacing - 1 + 4) % 4);
                 case AvailableCommand.MoveRight:
@@ -46,28 +64,58 @@ namespace Itse1430.Maze
                 return (CardinalDirection)((s_directionFacing + 2 + 4) % 4);
                 case AvailableCommand.MoveForward:
                 return (CardinalDirection)s_directionFacing;
+                case AvailableCommand.Quit:
+                Console.WriteLine ("Are you sure you want to quit? Yes/No: ");
+                QuitOption = Console.ReadLine ();
+                QuitOption = QuitOption.ToLower ();
+                if (QuitOption == "yes")
+                    Environment.Exit (0);
+                if (QuitOption == "no")
+                    break;
+                if (QuitOption != "yes" || QuitOption != "no")
+                {
+                    QuitOption = Console.ReadLine ();
+                    QuitOption = QuitOption.Trim ();
+                    QuitOption = QuitOption.ToLower ();
+                    Console.WriteLine ("Invalid input. Please enter 'yes' or 'no'.");
+                }
+                break;
             }
             return (CardinalDirection)s_directionFacing;
         }
         static AvailableCommand CommandHandler()
         {
+            string QuitOption;
+
             while(true)
             {
                 Console.WriteLine ("".PadLeft (45, '-'));
                 Console.WriteLine ("Where will you go?");
                 Console.WriteLine ("The available movement commands are: 'move forward', 'move backward', 'move right', 'move left'");
                 Console.WriteLine ("The available looking commands are: 'look left', 'look right', 'turn around'");
+                Console.WriteLine ("You may enter 'quit' to exit the game.");
                 Console.WriteLine ("".PadLeft (45, '-'));
                 string Command = CommandValid ();
+
                 switch (Command)
                 {
                     case "Quit":
+                    Console.WriteLine ("Are you sure you want to quit? Yes/No: ");
+                    QuitOption = Console.ReadLine ();
+                    QuitOption = QuitOption.ToLower ();
+                    if (QuitOption == "yes")
+                        Environment.Exit (0);
+                    if (QuitOption == "no")
+                        break;
+                    if (QuitOption != "yes" || QuitOption != "no")
                     {
-                        if (BoolValid ("Are you sure you would like to quit?"))
-                            return AvailableCommand.Quit;
-                        else
-                            continue;
+                        QuitOption = Console.ReadLine ();
+                        QuitOption = QuitOption.Trim ();
+                        QuitOption = QuitOption.ToLower ();
+                        Console.WriteLine ("Invalid input. Please enter 'yes' or 'no'.");
                     }
+                    return AvailableCommand.Quit;
+
                     case "move forward":
                     return AvailableCommand.MoveForward;
                     case "move backward":
@@ -78,42 +126,29 @@ namespace Itse1430.Maze
                     return AvailableCommand.MoveLeft;
 
                     case "look right":
-                    s_directionFacing = (s_directionFacing + 1 + 5) % 5;
+                    s_directionFacing = (s_directionFacing + 1 + 4) % 4;
                     DisplayDirection ();
                     break;
 
                     case "look left":
-                    s_directionFacing = (s_directionFacing - 1 + 5) % 5;
+                    s_directionFacing = (s_directionFacing - 1 + 4) % 4;
                     DisplayDirection ();
                     break;
 
                     case "turn around":
-                    s_directionFacing = (s_directionFacing + 1 + 5) % 5;
+                    s_directionFacing = (s_directionFacing + 1 + 4) % 4;
                     break;
 
                     default:
                     {
-                        Console.WriteLine ("Invalid input. Please enter a valid command");
+                        Console.WriteLine ("Invalid input. Please enter a valid command.");
                         continue;
                     }
                 }
             }
         }
-        enum CardinalDirection
-        {
-            North = 1,
-            East = 2,
-            South = 3,
-            West = 4,
-        }
-        enum AvailableCommand
-        {
-            MoveForward = 2,
-            MoveBackward = 3,
-            MoveLeft = 4,
-            MoveRight = 5,
-            Quit = 1
-        }
+
+        //checks for valid string
         static string CommandValid()
         {
             while (true)
@@ -122,23 +157,12 @@ namespace Itse1430.Maze
                 input = input.Trim ();
                 input = input.ToLower ();
                 if (String.IsNullOrEmpty (input))
-                    continue;    
+                    continue;
                 return input;
             }
+        }
+        
 
-        }
-        static bool BoolValid(string Information)
-        {
-            while (true)
-            {
-                Console.WriteLine (Information);
-                string input = Console.ReadLine ();
-                bool result;
-                if (Boolean.TryParse (input, out result))
-                    return result;
-                Console.WriteLine ("Not a True/False");
-            }
-        }
         static void DisplayDirection ()
         {
             while (true)
@@ -149,6 +173,8 @@ namespace Itse1430.Maze
                 return;
             }
         }
+        //begin of room functions
+        //returns to the appropriate room
         public static void Room1()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
@@ -285,6 +311,7 @@ namespace Itse1430.Maze
             Console.WriteLine ("".PadLeft (45, '-'));
             DisplayDirection ();
             Console.WriteLine ("You have entered the Crew Deck.");
+
             
             while (true)
             {
@@ -319,9 +346,10 @@ namespace Itse1430.Maze
         public static void Room5 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Life Support Deck.");
             
-            DisplayDirection ();
+
 
             while (true)
             {
@@ -356,6 +384,7 @@ namespace Itse1430.Maze
         public static void Room6 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Recreation Deck.");
             
 
@@ -393,6 +422,7 @@ namespace Itse1430.Maze
         public static void Room7 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Armory.");
             
             while (true)
@@ -428,6 +458,7 @@ namespace Itse1430.Maze
         public static void Room8 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Admin Deck.");
             
             while (true)
@@ -463,6 +494,7 @@ namespace Itse1430.Maze
         public static void Room9 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Infirmary.");
             
             while (true)
@@ -498,6 +530,7 @@ namespace Itse1430.Maze
         public static void Room10 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Galley");
             
             while (true)
@@ -534,6 +567,7 @@ namespace Itse1430.Maze
         public static void Room11 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered Compartment Hold 1.");
             
             while (true)
@@ -569,6 +603,7 @@ namespace Itse1430.Maze
         public static void Room12 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Brig.");
             
             while (true)
@@ -605,6 +640,7 @@ namespace Itse1430.Maze
         public static void Room13 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered Compartment Hold 2.");
             
             while (true)
@@ -640,6 +676,7 @@ namespace Itse1430.Maze
         public static void Room14 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Engineering Bay");
             
             while (true)
@@ -676,6 +713,7 @@ namespace Itse1430.Maze
         public static void Room15 ()
         {
             Console.WriteLine ("".PadLeft (45, '-'));
+            DisplayDirection ();
             Console.WriteLine ("You have entered the Main Engine Room");
             
             while (true)
@@ -722,6 +760,9 @@ namespace Itse1430.Maze
             GameOver();
 
         }
+
+        //tells user what happens once objective reached
+        //prompts to end program
         public static void GameOver()
         {
             Console.WriteLine ("Congratulations! YOU HAVE WON!");
