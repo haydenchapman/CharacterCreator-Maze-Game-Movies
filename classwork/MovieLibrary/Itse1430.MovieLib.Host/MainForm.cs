@@ -10,20 +10,22 @@ namespace Itse1430.MovieLib.Host
         {
             InitializeComponent ();
 
-            var movie = new Movie ();
-            movie = new Movie ();
-            movie.title = "Jaws";
+            //var movie = new Movie ();
+           // movie = new Movie ();
+           // movie.Title = "Jaws";
             //movie.description
+           // movie.description = 
         }
 
-        private void AddToolStripMenuItem_Click ( object sender, EventArgs e )
+        private void OnMovieAdd ( object sender, EventArgs e )
         {
             var form = new MovieForm ();
+
             //modeless - does not block main window
             //form.Show();
 
             //Show the new movie form modally
-            if (form.showDialog(this) == DialogResult.OK)
+            if (form.ShowDialog(this) == DialogResult.OK)
 
             form.ShowDialog ();
             //true save it
@@ -31,5 +33,20 @@ namespace Itse1430.MovieLib.Host
         }
 
         private Movie _movie;
+
+        private void OnMovieEdit ( object sender, EventArgs e )
+        {
+
+        }
+
+        private void OnMovieDelete ( object sender, EventArgs e )
+        {
+
+        }
+
+        private void OnFileExit ( object sender, EventArgs e )
+        {
+
+        }
     }
 }
