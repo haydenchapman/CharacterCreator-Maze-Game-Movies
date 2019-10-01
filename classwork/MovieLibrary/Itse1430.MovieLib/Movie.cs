@@ -6,102 +6,111 @@ using System.Threading.Tasks;
 
 namespace Itse1430.MovieLib
 {
-    /// <summary> Represents movie data.</summary>
+    /// <summary>Represents movie data.</summary>
     public class Movie
     {
-        /// <summary>get or sets title of the movie</summary>
+        #region Properties
+
+        //Properties expose data of class as needed
+        //Can be backed by fields but not required
+        //Can be read, written or both - up to developer
+
+        /// <summary>Gets or sets the title of the movie.</summary>
         public string Title
         {
             //null coalescing
-            //
+            // !String.IsNullOrEmpty(_title) ? _title : ""
             get { return _title ?? ""; }
             set { _title = value; }
         }
 
-        /// <summary>gets or sets description</summary>
+        /// <summary>Gets or sets the description of the movie.</summary>
         public string Description
         {
             get { return _description ?? ""; }
             set { _description = value; }
         }
 
-        /// <summary> gets or sets rating</summary>
+        /// <summary>Gets or sets the rating of the movie.</summary>
         public string Rating
         {
             get { return _rating ?? ""; }
             set { _rating = value; }
         }
 
-        /// <summary>gets or sets release year</summary>
+        /// <summary>Gets or sets the release year.</summary>        
         public int ReleaseYear { get; set; } = 1900; //Auto property
-        
-        //Full Property
+
+        //Full property
         //public int ReleaseYear
-        // {
-        //   get { return _releaseYear; }
-        //   set { _releaseYear = value; }
-        // }
+        //{
+        //    get { return _releaseYear; }
+        //    set { _releaseYear = value; }
+        //}
 
-        /// <summary>gets or sets run length</summary>
+        /// <summary>Gets or sets the run length.</summary>
         public int RunLength { get; set; }
-       // { 
-       //     get { return _runLength; }
-       //     set { _runLength = value; }
-       // }
+        //{
+        //    get { return _runLength; }
+        //    set { _runLength = value; }
+        //}
 
-        /// <summary>gets or sets has seen</summary>
         public bool HasSeen { get; set; }
-        // {
+        //{
         //    get { return _hasSeen; }
         //    set { _hasSeen = value; }
-        // }
+        //}
 
-        //value is 1939, read only, public
+        //Value is 1939, read only, public
         //public int ReleaseYearForColor { get; } = 1939;
 
-        //const field example
+        //Constant field
         public const int ReleaseYearForColor = 1939;
         //public readonly int ReleaseYearForColor = 1939;
-        //private readonly int _releaseYearForColor = 1939;
 
-        /// <summary>Determines if movie is black or white.</summary>
+        /// <summary>Determines if a movie is B&W.</summary>
         public bool IsBlackAndWhite
         {
+            //Calculated property, no backing field
+            //Just calculating a value
             get { return ReleaseYear <= ReleaseYearForColor; }
+
+            //Not settable by anyone
             //set { }
         }
 
+        //Mixed accessibility - property must be most visible
         public string TestAccessibility
         {
-            get { return "";}
+            //Single accessor can be more restrictive
+            get { return ""; }
+
+            //Not writable outside class
             private set { }
         }
+        #endregion
 
-        //Fields - data to be stored
-        //never make fields public!!
-        private string _title = "";
-        private string _description = "";
-        //private int _releaseYear = 1900;
-        private string _rating = "";
-        //private bool _hasSeen;
-        //private int _runLength;
-
-        /// <summary> Validates the movie. /// </summary>
-        /// <returns> An error message if validation fails or empty string otherwise. </returns>
-        public string Validate()
+        public override string ToString ()
         {
-            //this is implicit first parameter, represents instance
-            var title = "";
-            
-            //Name is required //
+            return $"{Title} ({ReleaseYear})";
+        }
+
+        /// <summary>Validates the movie.</summary>
+        /// <returns>An error message if validation fails or empty string otherwise.</returns>
+        public string Validate ()
+        {
+            //`this` is implicit first parameter, represents instance
+            //this.title == title
+
+            //Name is required
             if (String.IsNullOrEmpty (this.Title))
-                return "Title is required.";
+                return "Title is required";
 
             //Release year >= 1900
             if (ReleaseYear < 1900)
                 return "Release Year must be >= 1900";
 
-            //Run length > 0
+            //Run length >= 0
             if (RunLength < 0)
                 return "Run Length must be >= 0";
 
@@ -112,7 +121,18 @@ namespace Itse1430.MovieLib
             return "";
         }
 
-        //Can new up other objects
-        //private Movie originalMovie = new Movie ();
+        #region Private Members
+
+        //Fields - data to be stored
+        //Never make fields public!!
+        private string _title = "";
+        private string _description = "";
+        private string _rating = "";
+
+        //private int _releaseYear = 1900;
+        //private bool _hasSeen;
+        //private int _runLength;
+        //private readonly int _releaseYearForColor = 1939;
+        #endregion
     }
 }
