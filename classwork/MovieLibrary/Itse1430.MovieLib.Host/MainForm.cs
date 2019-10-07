@@ -10,9 +10,9 @@ namespace Itse1430.MovieLib.Host
             InitializeComponent ();
 
             //Itse1430.MovieLib.Movie
-            Movie movie = new Movie ();
-            movie.Title = "Jaws";
-            movie.Description = movie.Title;
+            //Movie movie = new Movie ();
+            //movie.Title = "Jaws";
+            //movie.Description = movie.Title;
         }
 
         //Called when Movie\Add selected
