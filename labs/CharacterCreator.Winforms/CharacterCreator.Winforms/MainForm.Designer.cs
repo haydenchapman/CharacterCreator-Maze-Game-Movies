@@ -126,7 +126,7 @@
             // 
             // _1stCharacters
             // 
-            this._1stCharacters.DisplayMember = "_1stCharacters";
+            this._1stCharacters.DataSource = this.mainFormBindingSource;
             this._1stCharacters.FormattingEnabled = true;
             this._1stCharacters.ItemHeight = 20;
             this._1stCharacters.Location = new System.Drawing.Point(13, 37);

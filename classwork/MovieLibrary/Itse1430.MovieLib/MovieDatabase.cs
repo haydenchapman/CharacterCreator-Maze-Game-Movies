@@ -9,13 +9,75 @@ namespace Itse1430.MovieLib
     /// <summary> Manages the movies in a database. </summary>
     public class MovieDatabase
     {
+        //constructor startup
+        public MovieDatabase ()
+        {
+            //collections initializer
+            _movies = new List<Movie> {
+                new Movie() {Id = ++_id, Title = "Jaws", ReleaseYear = 1979, Rating = "PG", },
+                new Movie() {Id = ++_id, Title = "Star Wars", ReleaseYear = 1977, Rating = "PG", },
+                new Movie() {Id = ++_id, Title = "Demon Slayer", ReleaseYear = 2019, Rating = "PG", },
+                new Movie() {Id = ++_id, Title = "Star Trek", ReleaseYear = 2016, Rating = "PG-13", },
+            };
+
+           // var movie = new Movie () {
+           //     Id = ++_id,
+           //     Title = "Jaws",
+           //     ReleaseYear = 1979,
+           //     Rating = "PG",
+           // };
+           // Add (movie);
+
+           // _movies.Add (movie);
+            //movie = new Movie () {
+            //    Id = ++_id,
+            //    Title = "Star Wars",
+            //    ReleaseYear = 1977,
+            //    Rating = "PG",
+            //};
+            ////Add (movie);
+            //_movies.Add (movie);
+
+            //movie = new Movie () {
+            //    Id = ++_id,
+            //    Title = "Demon Slayer",
+            //    ReleaseYear = 2019,
+            //    Rating = "PG",
+            //};
+            ////Add (movie);
+            //_movies.Add (movie);
+
+            //movie = new Movie () {
+            //    Id = ++_id,
+            //    Title = "Star Trek",
+            //    ReleaseYear = 2016,
+            //    Rating = "PG-13",
+            //};
+            ////Add (movie);
+            //_movies.Add (movie);
+        }
         public Movie Add ( Movie movie )
         {
+            //TODO: Validation
+            if (movie == null)
+                return null;
+            if (!String.IsNullOrEmpty(movie.Validate()))
+                return null;
+
+            //name must be unique
+            var existing = FindMovie (movie.Title);
+            if (existing != null)
+                return null;
+
+            //add movie if validation works
             movie.Id = ++_id;
-            _movies.Add (movie);
+
+            var newMovie = Clone (new Movie (), movie);
+            _movies.Add (newMovie);
 
             return movie;
 
+            // Old Array Code
             //Add to array
             //for (var index = 0; index < _movies.Count; ++index)
             //{
@@ -58,9 +120,22 @@ namespace Itse1430.MovieLib
             var movies = new Movie[_movies.Count];
             foreach (var movie in _movies)
                 if (movie != null)
-                    movies[index++] = movie;
+                    movies[index++] = Clone(new Movie(), movie);
 
             return movies;
+        }
+
+        private Movie Clone( Movie target, Movie source )
+        {
+            target.Id = source.Id;
+            target.Description = source.Description;
+            target.HasSeen = source.HasSeen;
+            target.Rating = source.Rating;
+            target.ReleaseYear = source.ReleaseYear;
+            target.RunLength = source.RunLength;
+            target.Title = source.Title;
+
+            return target;
         }
 
         private Movie FindMovie (int id)
@@ -72,21 +147,38 @@ namespace Itse1430.MovieLib
             return null;
         }
 
+        private Movie FindMovie ( string name )
+        {
+            foreach (var movie in _movies)
+                if (String.Compare(movie.Title, name, true) == 0)
+                    return movie;
+
+            return null;
+        }
+
         public void Update(int id, Movie newMovie )
         {
-            var existing = FindMovie (id);
+            //validate
+            if (id <= 0)
+                return;
+            if (newMovie == null)
+                return;
+            if (!String.IsNullOrEmpty (newMovie.Validate ()))
+                return;
+
+            //name must be unique
+            var existing = FindMovie (newMovie.Title);
+            if (existing != null && existing.Id != id)
+                return;
+
+            existing = FindMovie (id);
             if (existing == null)
                 return;//TODO error
                        //TODO: Change to update
 
             //update existing movie
-            existing.Description = newMovie.Description;
-            existing.HasSeen = newMovie.HasSeen;
-            existing.Rating = newMovie.Rating;
-            existing.ReleaseYear = newMovie.ReleaseYear;
-            existing.RunLength = newMovie.ReleaseYear;
-            existing.Title = newMovie.Title;
-
+            newMovie.Id = id;
+            Clone (existing, newMovie);
 
            // _movie.Remove (movie);
             //RemoveMovie(form.Movie);
@@ -95,7 +187,12 @@ namespace Itse1430.MovieLib
 
         public Movie get (int id)
         {
-            return FindMovie (id);
+            //validate
+            if (id <= 0)
+                return null;
+
+            var movie = FindMovie (id);
+            return movie != null ? Clone (new Movie (), movie) : null;
         }
 
         //private Movie[] _movies = new Movie[100];

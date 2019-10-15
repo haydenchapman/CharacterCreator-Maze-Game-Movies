@@ -15,16 +15,11 @@ namespace CharacterCreator.Winforms
         public MainForm ()
         {
             InitializeComponent ();
-            Character character = new Character ();
-            character.Name = "";
-            character.Description = character.Name;
         }
 
         private void MainForm_Load ( object sender, EventArgs e )
         {
-            Character character = new Character ();
-            character.Name = "";
-            character.Description = character.Name;
+
         }
 
         private void OnFileExit ( object sender, EventArgs e )

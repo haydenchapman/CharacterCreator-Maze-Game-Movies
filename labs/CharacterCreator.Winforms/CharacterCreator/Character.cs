@@ -103,4 +103,5 @@ namespace CharacterCreator
         public int Charisma { get; set; } = 100;
 
     }
+
 }

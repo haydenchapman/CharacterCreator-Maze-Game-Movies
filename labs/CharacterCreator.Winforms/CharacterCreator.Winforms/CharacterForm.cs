@@ -66,7 +66,7 @@ namespace CharacterCreator.Winforms
             var message = character.Validate ();
             if (!String.IsNullOrEmpty (message))
             {
-                MessageBox.Show (this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show (this, message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             };
 
@@ -79,12 +79,6 @@ namespace CharacterCreator.Winforms
         {
             DialogResult = DialogResult.Cancel;
             Close ();
-        }
-
-
-        private void CbProfession_SelectedIndexChanged ( object sender, EventArgs e )
-        {
-
         }
 
         private void OnValidatingName ( object sender, CancelEventArgs e )
