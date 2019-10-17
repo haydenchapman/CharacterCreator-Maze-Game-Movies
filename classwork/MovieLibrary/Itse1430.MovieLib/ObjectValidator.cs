@@ -9,16 +9,15 @@ namespace Itse1430.MovieLib
 {
     public class ObjectValidator
     {
-        public IEnumerable<ValidationResult> TryValidateObject (IValidatableObject)
+        public IEnumerable<ValidationResult> TryValidateObject (IValidatableObject value)
         {
+            var results = new List<ValidationResult> ();
             var context = new ValidationContext (value);
 
-            var results = new List<ValidationResult> ();
-
-            if Validator.TryValidateObject (value, context, results)) ;
+            Validator.TryValidateObject (value, context, results);
 
             foreach (var result in results)
-                yield return results;
+                yield return result;
         }
     }
 }
