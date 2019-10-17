@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace Itse1430.MovieLib
 {
     /// <summary>Represents movie data.</summary>
-    public class Movie
+    public class Movie : IValidatableObject
     {
         #region Properties
 
@@ -99,28 +100,55 @@ namespace Itse1430.MovieLib
 
         /// <summary>Validates the movie.</summary>
         /// <returns>An error message if validation fails or empty string otherwise.</returns>
-        public string Validate ()
-        {
-            //`this` is implicit first parameter, represents instance
-            //this.title == title
+        //public string Validate ()
+        //{
+        //    //`this` is implicit first parameter, represents instance
+        //    //this.title == title
 
-            //Name is required
-            if (String.IsNullOrEmpty (this.Title))
-                return "Title is required";
+        //    //Name is required
+        //    if (String.IsNullOrEmpty (this.Title))
+        //        return "Title is required";
+
+        //    //Release year >= 1900
+        //    if (ReleaseYear < 1900)
+        //        return "Release Year must be >= 1900";
+
+        //    //Run length >= 0
+        //    if (RunLength < 0)
+        //        return "Run Length must be >= 0";
+
+        //    //Rating is required
+        //    if (String.IsNullOrEmpty (Rating))
+        //        return "Rating is required";
+
+        //    return "";
+        //}
+
+        public IEnumerable<ValidationResult> Validate ( ValidationContext validationContext )
+        {
+            //Iterator syntax
+            //var results = new List<ValidationResult> ();
+
+            if (String.IsNullOrEmpty (Title))
+                //results.Add (new ValidationResult ("Title is required"));
+                yield return new ValidationResult ("Title is required");
 
             //Release year >= 1900
             if (ReleaseYear < 1900)
-                return "Release Year must be >= 1900";
+                //results.Add(new ValidationResult("Release Year must be >= 1900"));
+                yield return new ValidationResult ("Release Year must be >= 1900");
 
             //Run length >= 0
             if (RunLength < 0)
-                return "Run Length must be >= 0";
+                //results.Add(new ValidationResult("Run Length must be >= 0"));
+                yield return new ValidationResult ("Release Year must be >= 1900");
 
             //Rating is required
             if (String.IsNullOrEmpty (Rating))
-                return "Rating is required";
+                //results.Add(new ValidationResult( "Rating is required"));
+                yield return new ValidationResult ("Release Year must be >= 1900");
 
-            return "";
+            //return results;
         }
 
         #region Private Members

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -58,18 +59,34 @@ namespace Itse1430.MovieLib.Host
             };
 
             //Validate
-            var message = movie.Validate ();
-            if (!String.IsNullOrEmpty (message))
-            {
-                MessageBox.Show (this, message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;  
-            }
+            if (!Validate (movie))
+                return;
+
+           
 
             
             Movie = movie;
 
             DialogResult = DialogResult.OK;
             Close ();
+        }
+
+        private bool Validate( IValidatableObject movie)
+        {
+            //var message = movie.Validate();
+            var validator = new ObjectValidator ();
+            var results = validator.TryValidateObject (movie);
+            if (results.Count))
+            //if (results.Count() > 0)
+            {
+                //if (!String.IsNullOrEmpty (message))
+                foreach (var result in results)
+                {
+                    MessageBox.Show (this, result.ErrorMessage, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return false;
+            }
+            return true;
         }
 
         private int GetAsInt32 ( TextBox control )
