@@ -13,9 +13,24 @@ namespace Itse1430.MovieLib.Host
 {
     public partial class MovieForm : Form
     {
-        public MovieForm ()
+        //Base ctor is always called unless ctor chaining is used
+        public MovieForm () //: base()
         {
+            //Don't need an init method when ctor chaining is available
+            //Init();
             InitializeComponent ();
+        }
+
+        //private void Init () { }
+
+        // Call default ctor first
+        public MovieForm ( string title ) : this ()
+        {
+            //Handled by ctor chaining
+            //Init();
+            //InitializeComponent();
+
+            Text = title;
         }
 
         //Must be a property...
@@ -23,6 +38,8 @@ namespace Itse1430.MovieLib.Host
 
         protected override void OnLoad ( EventArgs e )
         {
+            ///Init();
+
             //Call base type
             //OnLoad(e);
             base.OnLoad (e);
@@ -45,11 +62,8 @@ namespace Itse1430.MovieLib.Host
             if (!ValidateChildren ())
                 return;
 
-            //movie.set_title(_txtName.Text);
-
-            //Object initializer syntex
-            var movie = new Movie {
-                //movie.set_title(_txtName.Text);
+            //Object initializer syntax
+            var movie = new Movie () {
                 Title = _txtName.Text,
                 Description = _txtDescription.Text,
                 ReleaseYear = GetAsInt32 (_txtReleaseYear),
@@ -62,30 +76,28 @@ namespace Itse1430.MovieLib.Host
             if (!Validate (movie))
                 return;
 
-           
-
-            
+            //TODO: Save it
             Movie = movie;
 
             DialogResult = DialogResult.OK;
             Close ();
         }
 
-        private bool Validate( IValidatableObject movie)
+        private bool Validate ( IValidatableObject movie )
         {
-            //var message = movie.Validate();
-            var validator = new ObjectValidator ();
-            var results = validator.TryValidateObject (movie);
-            if (results.Count() > 0)
-            //if (results.Count() > 0)
+            var results = ObjectValidator.TryValidateObject (movie);
+            if (results.Count () > 0)
             {
-                //if (!String.IsNullOrEmpty (message))
+                //if (!String.IsNullOrEmpty(message))
                 foreach (var result in results)
                 {
-                    MessageBox.Show (this, result.ErrorMessage, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    MessageBox.Show (this, result.ErrorMessage,
+                                    "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                };
                 return false;
-            }
+            };
+
             return true;
         }
 
@@ -103,11 +115,6 @@ namespace Itse1430.MovieLib.Host
             Close ();
         }
 
-        private void MovieForm_Load ( object sender, EventArgs e )
-        {
-
-        }
-
         private void OnValidatingName ( object sender, CancelEventArgs e )
         {
             var control = sender as TextBox;
@@ -123,16 +130,30 @@ namespace Itse1430.MovieLib.Host
             }
         }
 
+        private void OnValidatingRating ( object sender, CancelEventArgs e )
+        {
+            var control = sender as ComboBox;
+
+            //Text is required
+            if (control.SelectedIndex <= 0)
+            {
+                e.Cancel = true;
+                _errors.SetError (control, "Rating is required");
+            } else
+            {
+                _errors.SetError (control, "");
+            }
+        }
+
         private void OnValidatingReleaseYear ( object sender, CancelEventArgs e )
         {
             var control = sender as TextBox;
 
-            //year greater than 1900
             var value = GetAsInt32 (control);
             if (value < 1900)
             {
                 e.Cancel = true;
-                _errors.SetError (control, "Release Year >= 1900");
+                _errors.SetError (control, "Release year >= 1900");
             } else
             {
                 _errors.SetError (control, "");
@@ -143,27 +164,11 @@ namespace Itse1430.MovieLib.Host
         {
             var control = sender as TextBox;
 
-            //run length < 0
             var value = GetAsInt32 (control);
             if (value < 0)
             {
                 e.Cancel = true;
-                _errors.SetError (control, "Run Length must be >= 0");
-            } else
-            {
-                _errors.SetError (control, "");
-            }
-        }
-
-        private void OnValidatingRating ( object sender, CancelEventArgs e )
-        {
-            var control = sender as ComboBox;
-
-            //Name is required
-            if (control.SelectedIndex <= 0)
-            {
-                e.Cancel = true;
-                _errors.SetError (control, "Rating is required");
+                _errors.SetError (control, "Run length must be >= 0");
             } else
             {
                 _errors.SetError (control, "");

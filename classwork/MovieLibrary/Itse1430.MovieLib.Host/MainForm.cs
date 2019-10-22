@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Itse1430.MovieLib.Host
@@ -19,6 +20,10 @@ namespace Itse1430.MovieLib.Host
         protected override void OnLoad ( EventArgs e )
         {
             base.OnLoad (e);
+            _movies = new MemoryMovieDatabase ();
+            var count = _movies.GetAll ().Count ();
+            if (count == 0)
+                MovieDatabaseExtensions.Seed (_movies);
             UpdateUI ();
         }
 
@@ -142,7 +147,7 @@ namespace Itse1430.MovieLib.Host
         //private Movie[] _movies = new Movie[100];
         //private List<Movie> _movies = new List<Movie>();
 
-        private MovieDatabase _movies = new MovieDatabase ();
+        private MovieDatabase _movies = new MemoryMovieDatabase ();
 
         private void MainForm_Load ( object sender, EventArgs e )
         {
