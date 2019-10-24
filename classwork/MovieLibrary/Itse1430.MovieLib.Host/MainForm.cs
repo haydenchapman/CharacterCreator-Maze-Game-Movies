@@ -23,7 +23,9 @@ namespace Itse1430.MovieLib.Host
             _movies = new MemoryMovieDatabase ();
             var count = _movies.GetAll ().Count ();
             if (count == 0)
-                MovieDatabaseExtensions.Seed (_movies);
+                //MovieDatabaseExtensions.Seed (_movies);
+                _movies.Seed ();
+
             UpdateUI ();
         }
 
@@ -51,6 +53,11 @@ namespace Itse1430.MovieLib.Host
 
             //Movie or null
             return item as Movie;
+
+            //var firstMovie = _lstMovies.SelectedItems
+            //                          .OfType<Movie> ()
+            //                          .FirstOrDefault ();
+
 
             //old approach1
             //var tempVar = item as Movie;
@@ -133,21 +140,46 @@ namespace Itse1430.MovieLib.Host
             form.ShowDialog (this);
         }
 
+        //private string OrderByTitle(Movie movie )
+        //{
+        //    return movie.Title;
+        //}
+        //private int OrderByReleaseYear(Movie movie )
+        //{
+        //    return movie.ReleaseYear;
+        //}
         private void UpdateUI ()
         {
-            var movies = _movies.GetAll ();
+            var movies = _movies.GetAll ()
+                                //.OrderBy (OrderByTitle)
+                                .OrderBy(m => m.Title)
+                                //.ThenBy (OrderByReleaseYear)
+                                .ThenBy (m => m.ReleaseYear);
+
+            PlayWithEnumerable (movies);
 
             //Programmatic approach
             //_lstMovies.Items.Clear ();
             //_lstMovies.Items.AddRange (movies);
 
-            _lstMovies.DataSource = movies;
+            _lstMovies.DataSource = movies.ToArray();
+        }
+
+        private void PlayWithEnumerable ( IEnumerable<Movie> movies )
+        {
+            Movie firstOne = movies.FirstOrDefault ();
+            Movie lastOne = movies.LastOrDefault ();
+            //Movie onlyOne = movies.SingleOrDefault();
+
+            //var coolMovies = movies.Where (m => m.ReleaseYear > 1979 && m.ReleaseYear < 2000);
+            int id = 1;
+            var otherMovies = movies.Where (m => m.Id > ++id);
         }
 
         //private Movie[] _movies = new Movie[100];
         //private List<Movie> _movies = new List<Movie>();
 
-        private MovieDatabase _movies = new MemoryMovieDatabase ();
+        private IMovieDatabase _movies;
 
         private void MainForm_Load ( object sender, EventArgs e )
         {

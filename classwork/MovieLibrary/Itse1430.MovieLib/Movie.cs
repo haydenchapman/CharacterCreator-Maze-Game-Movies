@@ -23,22 +23,28 @@ namespace Itse1430.MovieLib
         {
             //null coalescing
             // !String.IsNullOrEmpty(_title) ? _title : ""
-            get { return _title ?? ""; }
-            set { _title = value; }
+            //get { return _title ?? ""; }
+            get => _title ?? "";
+            set => _title = value;
+            //set { _title = value; }
         }
 
         /// <summary>Gets or sets the description of the movie.</summary>
         public string Description
         {
-            get { return _description ?? ""; }
-            set { _description = value; }
+            //get { return _description ?? ""; }
+            //set { _description = value; }
+            get => _description ?? "";
+            set => _description = value;
         }
 
         /// <summary>Gets or sets the rating of the movie.</summary>
         public string Rating
         {
-            get { return _rating ?? ""; }
-            set { _rating = value; }
+            //get { return _rating ?? ""; }
+            //set { _rating = value; }
+            get => _rating ?? "";
+            set => _rating = value;
         }
 
         /// <summary>Gets or sets the release year.</summary>        
@@ -73,14 +79,16 @@ namespace Itse1430.MovieLib
 
         /// <summary>Determines if a movie is B&W.</summary>
         public bool IsBlackAndWhite
-        {
-            //Calculated property, no backing field
-            //Just calculating a value
-            get { return ReleaseYear <= ReleaseYearForColor; }
+            => ReleaseYear <= ReleaseYearForColor;
 
-            //Not settable by anyone
-            //set { }
-        }
+        //public bool IsBlackAndWhite
+        //{
+        //    //Calculated property, no backing field
+        //    //Just calculating a value
+        //    get => ReleaseYear <= ReleaseYearForColor; 
+        //    //Not settable by anyone
+        //    //set { }
+        //}
 
         //Mixed accessibility - property must be most visible
         public string TestAccessibility
@@ -94,10 +102,8 @@ namespace Itse1430.MovieLib
         #endregion
 
         public override string ToString ()
-        {
-            return $"{Title} ({ReleaseYear})";
-        }
-
+            => $"{Title} ({ReleaseYear})";
+        
         /// <summary>Validates the movie.</summary>
         /// <returns>An error message if validation fails or empty string otherwise.</returns>
         //public string Validate ()
