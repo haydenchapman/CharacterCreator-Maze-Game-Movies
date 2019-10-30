@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
+using Itse1430.MovieLib.IO;
 
 namespace Itse1430.MovieLib.Host
 {
@@ -20,7 +22,7 @@ namespace Itse1430.MovieLib.Host
         protected override void OnLoad ( EventArgs e )
         {
             base.OnLoad (e);
-            _movies = new MemoryMovieDatabase ();
+            _movies = new FileMovieDatabase (@"movies.csv");
             var count = _movies.GetAll ().Count ();
             if (count == 0)
                 //MovieDatabaseExtensions.Seed (_movies);
@@ -40,8 +42,25 @@ namespace Itse1430.MovieLib.Host
             //Show the new movie form modally
             if (form.ShowDialog (this) == DialogResult.OK)
             {
-                _movies.Add (form.Movie);
-                UpdateUI ();
+                try
+                {
+                    _movies.Add (form.Movie);
+                    UpdateUI ();
+                } catch (ArgumentException ex)
+                {
+                    //Recovery
+                    MessageBox.Show (ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch (ValidationException ex)
+                {
+                    //Recovery
+                    MessageBox.Show (ex.Message, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch //(Exception ex)
+                {
+                    //Recovery
+                    MessageBox.Show ("Save Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    //throw;
+                };
             };
         }
 
