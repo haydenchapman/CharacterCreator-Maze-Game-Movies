@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
+using Itse._1430.MovieLib.SqlServer;
 using Itse1430.MovieLib.IO;
 
 namespace Itse1430.MovieLib.Host
@@ -22,11 +24,13 @@ namespace Itse1430.MovieLib.Host
         protected override void OnLoad ( EventArgs e )
         {
             base.OnLoad (e);
-            _movies = new FileMovieDatabase (@"movies.csv");
-            var count = _movies.GetAll ().Count ();
-            if (count == 0)
-                //MovieDatabaseExtensions.Seed (_movies);
-                _movies.Seed ();
+            var connString = ConfigurationManager.ConnectionStrings["MovieDatabase"];
+            //_movies = new FileMovieDatabase (@"movies.csv");
+            _movies = new SqlMovieDatabase (connString.ConnectionString);
+            //var count = _movies.GetAll ().Count ();
+            //if (count == 0)
+            //    //MovieDatabaseExtensions.Seed (_movies);
+            //    _movies.Seed ();
 
             UpdateUI ();
         }
