@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+//
 namespace CharacterCreator
 {
     public static class ObjectValidator

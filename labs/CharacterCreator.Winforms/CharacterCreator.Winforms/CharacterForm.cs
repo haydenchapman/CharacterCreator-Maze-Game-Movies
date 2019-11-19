@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
-
+//
 namespace CharacterCreator.Winforms
 {
     public partial class CharacterForm : Form

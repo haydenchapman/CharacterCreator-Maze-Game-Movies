@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
+//
 namespace CharacterCreator
 {
     public abstract class CharacterDatabase : ICharacterDatabase
