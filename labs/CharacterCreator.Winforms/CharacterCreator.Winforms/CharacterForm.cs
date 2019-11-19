@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CharacterCreator.Winforms
@@ -18,14 +14,6 @@ namespace CharacterCreator.Winforms
         }
 
         public Character Character { get; set; }
-
-        private int GetAsInt32 ( TextBox control )
-        {
-            if (Int32.TryParse (control.Text, out var result))
-                return result;
-
-            return 0;
-        }
 
         protected override void OnLoad ( EventArgs e )
         {
@@ -47,44 +35,58 @@ namespace CharacterCreator.Winforms
             ValidateChildren ();
         }
 
+        private int GetAsInt32 ( TextBox control )
+        {
+            if (Int32.TryParse (control.Text, out var result))
+                return result;
+
+            return 0;
+        }
+
         private void OnSave ( object sender, EventArgs e )
         {
             if (!ValidateChildren ())
                 return;
 
-            var character = new Character ();
-            character.Name = _txtName.Text;
-            character.Description = _txtDescription.Text;
-            character.Profession = cbProfession.Text;
-            character.Race = cbRace.Text;
-            character.Strength = GetAsInt32 (_txtStrength);
-            character.Intelligence = GetAsInt32 (_txtIntelligence);
-            character.Agility = GetAsInt32 (_txtAgility);
-            character.Constitution = GetAsInt32 (_txtConstitution);
-            character.Charisma = GetAsInt32 (_txtCharisma);
-
-            var message = character.Validate ();
-            if (!String.IsNullOrEmpty (message))
-            {
-                MessageBox.Show (this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+            var character = new Character () {
+                Name = _txtName.Text,
+                Description = _txtDescription.Text,
+                Profession = cbProfession.Text,
+                Race = cbRace.Text,
+                Strength = GetAsInt32 (_txtStrength),
+                Intelligence = GetAsInt32 (_txtIntelligence),
+                Agility = GetAsInt32 (_txtAgility),
+                Constitution = GetAsInt32 (_txtConstitution),
+                Charisma = GetAsInt32 (_txtCharisma),
             };
+
+            if (!Validate (character))
+                return;
 
             Character = character;
             DialogResult = DialogResult.OK;
             Close ();
         }
 
+        private bool Validate ( IValidatableObject character )
+        {
+            var results = ObjectValidator.TryValidateObject (character);
+            if (results.Count () > 0)
+            {
+                foreach (var result in results)
+                {
+                    MessageBox.Show (this, result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                };
+                return false;
+            };
+
+            return true;
+        }
+
         private void OnCancel ( object sender, EventArgs e )
         {
             DialogResult = DialogResult.Cancel;
             Close ();
-        }
-
-
-        private void CbProfession_SelectedIndexChanged ( object sender, EventArgs e )
-        {
-
         }
 
         private void OnValidatingName ( object sender, CancelEventArgs e )
@@ -108,10 +110,10 @@ namespace CharacterCreator.Winforms
             if (control.SelectedIndex == -1)
             {
                 e.Cancel = true;
-                _errors1.SetError (control, "Profession is required");
+                _errors.SetError (control, "Profession is required");
             } else
             {
-                _errors1.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
@@ -122,10 +124,10 @@ namespace CharacterCreator.Winforms
             if (control.SelectedIndex == -1)
             {
                 e.Cancel = true;
-                _errors2.SetError (control, "Race is required");
+                _errors.SetError (control, "Race is required");
             } else
             {
-                _errors2.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
@@ -137,10 +139,10 @@ namespace CharacterCreator.Winforms
             if (value <= 0 || value > 100)
             {
                 e.Cancel = true;
-                _errors3.SetError (control, "Strength must be between 0 to 100");
+                _errors.SetError (control, "Strength must be between 1 to 100");
             } else
             {
-                _errors3.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
@@ -152,10 +154,10 @@ namespace CharacterCreator.Winforms
             if (value <= 0 || value > 100)
             {
                 e.Cancel = true;
-                _errors4.SetError (control, "Attribute must be between 0 to 100");
+                _errors.SetError (control, "Intelligence must be between 1 to 100");
             } else
             {
-                _errors4.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
@@ -167,10 +169,10 @@ namespace CharacterCreator.Winforms
             if (value <= 0 || value > 100)
             {
                 e.Cancel = true;
-                _errors5.SetError (control, "Attribute must be between 0 to 100");
+                _errors.SetError (control, "Agility must be between 1 to 100");
             } else
             {
-                _errors5.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
@@ -182,27 +184,25 @@ namespace CharacterCreator.Winforms
             if (value <= 0 || value > 100)
             {
                 e.Cancel = true;
-                _errors6.SetError (control, "Attribute must be between 0 to 100");
+                _errors.SetError (control, "Constitution must be between 1 to 100");
             } else
             {
-                _errors6.SetError (control, "");
+                _errors.SetError (control, "");
             }
         }
 
         private void OnValidatingCharisma ( object sender, CancelEventArgs e )
         {
-            {
-                var control = sender as TextBox;
+            var control = sender as TextBox;
 
-                var value = GetAsInt32 (control);
-                if (value <= 0 || value > 100)
-                {
-                    e.Cancel = true;
-                    _errors7.SetError (control, "Attribute must be between 0 to 100");
-                } else
-                {
-                    _errors7.SetError (control, "");
-                }
+            var value = GetAsInt32 (control);
+            if (value <= 0 || value > 100)
+            {
+                e.Cancel = true;
+                _errors.SetError (control, "Charisma must be between 1 to 100");
+            } else
+            {
+                _errors.SetError (control, "");
             }
         }
     }

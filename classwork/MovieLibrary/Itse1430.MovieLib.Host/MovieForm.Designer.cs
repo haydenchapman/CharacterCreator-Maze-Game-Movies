@@ -205,7 +205,6 @@
             this.MinimumSize = new System.Drawing.Size(700, 485);
             this.Name = "MovieForm";
             this.Text = "Movie Details";
-            this.Load += new System.EventHandler(this.MovieForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this._errors)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

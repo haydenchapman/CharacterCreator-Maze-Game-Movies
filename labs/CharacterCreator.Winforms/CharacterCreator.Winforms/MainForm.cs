@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CharacterCreator.Winforms
@@ -15,45 +9,53 @@ namespace CharacterCreator.Winforms
         public MainForm ()
         {
             InitializeComponent ();
-            Character character = new Character ();
-            character.Name = "";
-            character.Description = character.Name;
         }
 
-        private void MainForm_Load ( object sender, EventArgs e )
+        protected override void OnLoad ( EventArgs e )
         {
-            Character character = new Character ();
-            character.Name = "";
-            character.Description = character.Name;
-        }
+            base.OnLoad (e);
 
+            _characters = new MemoryCharacterDatabase ();
+            var count = _characters.GetAll ().Count ();
+            if (count == 0)
+
+            UpdateUI ();
+        }
         private void OnFileExit ( object sender, EventArgs e )
         {
             Close ();
+
         }
 
-        private void OnCharacterNew ( object sender, EventArgs e )
+        private void OnHelpAbout ( object sender, EventArgs e )
+        {
+            var form = new AboutForm ();
+            form.ShowDialog (this);
+        }
+
+        private void OnCharacterAdd ( object sender, EventArgs e )
         {
             var form = new CharacterForm ();
+
             if (form.ShowDialog (this) == DialogResult.OK)
             {
-                AddCharacter (form.Character);
+                _characters.Add (form.Character);
                 UpdateUI ();
-            }
+            };
         }
 
-        private Character[] _characters = new Character[100];
-
-        private void AddCharacter ( Character character )
+        private Character GetSelectedCharacter ()
         {
-            for (var index = 0; index < _characters.Length; ++index)
-            {
-                if (_characters[index] == null)
-                {
-                    _characters[index] = character;
-                    return;
-                };
-            };
+            var item = _1stCharacters.SelectedItem;
+
+            return item as Character;
+        }
+
+        private void UpdateUI ()
+        {
+            var characters = _characters.GetAll ();
+
+            _1stCharacters.DataSource = characters.ToArray ();
         }
 
         private void OnCharacterEdit ( object sender, EventArgs e )
@@ -67,75 +69,37 @@ namespace CharacterCreator.Winforms
 
             if (form.ShowDialog (this) == DialogResult.OK)
             {
-                RemoveCharacter (character);
-                AddCharacter (form.Character);
+                _characters.Update (character.Id, form.Character);
                 UpdateUI ();
-            }
-        }
-
-        private void RemoveCharacter ( Character character )
-        {
-            for (var index = 0; index < _characters.Length; ++index)
-            {
-                if (_characters[index] == character)
-                {
-                    _characters[index] = null;
-                    return;
-                };
             };
         }
 
         private void OnCharacterDelete ( object sender, EventArgs e )
         {
-            {
-                var character = GetSelectedCharacter ();
-                if (character == null)
-                    return;
+            var character = GetSelectedCharacter ();
+            if (character == null)
+                return;
 
-                var msg = $"Are you sure you want to delete {character.Name}?";
-                var result = MessageBox.Show (msg, "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result != DialogResult.Yes)
-                    return;
+            var msg = $"Are you sure you want to delete {character.Name}?";
+            var result = MessageBox.Show (msg, "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+                return;
 
-                RemoveCharacter (character);
-                UpdateUI ();
-            }
+            _characters.Remove (character.Id);
+            UpdateUI ();
         }
 
-        private Character[] GetCharacters ()
+        private void MainForm_Load ( object sender, EventArgs e )
         {
-            var count = 0;
-            foreach (var character in _characters)
-                if (character != null)
-                    ++count;
 
-            var index = 0;
-            var characters = new Character[count];
-            foreach (var character in _characters)
-                if (character != null)
-                    characters[index++] = character;
+            _characters = new MemoryCharacterDatabase ();
+            var count = _characters.GetAll ().Count ();
+            if (count == 0)
+                _characters.GetAll ();
 
-            return characters;
+            UpdateUI ();
         }
 
-        private Character GetSelectedCharacter ()
-        {
-            var item = _1stCharacters.SelectedItem;
-
-            return item as Character;
-        }
-
-        private void UpdateUI ()
-        {
-            var characters = GetCharacters ();
-
-            _1stCharacters.DataSource = characters;
-        }
-
-        private void OnAboutForm ( object sender, EventArgs e )
-        {
-            var form = new AboutForm ();
-            form.ShowDialog (this);
-        }
+        private ICharacterDatabase _characters;
     }
 }

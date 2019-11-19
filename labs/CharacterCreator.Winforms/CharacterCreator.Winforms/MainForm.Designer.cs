@@ -88,7 +88,7 @@
             this.aboutToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(195, 34);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.OnAboutForm);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.OnHelpAbout);
             // 
             // characterToolStripMenuItem
             // 
@@ -106,7 +106,7 @@
             this.New.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.New.Size = new System.Drawing.Size(213, 34);
             this.New.Text = "N&ew";
-            this.New.Click += new System.EventHandler(this.OnCharacterNew);
+            this.New.Click += new System.EventHandler(this.OnCharacterAdd);
             // 
             // Edit
             // 

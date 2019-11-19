@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itse1430.MovieLib.Host", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itse1430.MovieLib", "Itse1430.MovieLib\Itse1430.MovieLib.csproj", "{8A6E394B-9B59-4BCC-8FC1-DE8AA2F33A12}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MovieDb", "MovieDb\MovieDb.sqlproj", "{BDE72751-B36A-499E-81E4-7FB8951B67F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itse.1430.MovieLib.SqlServer", "Itse.1430.MovieLib.SqlServer\Itse.1430.MovieLib.SqlServer.csproj", "{9E2062FD-250F-4293-B679-B3FCE5878B5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "itse1430.MovieLib.WebHost", "itse1430.MovieLib.WebHost\itse1430.MovieLib.WebHost.csproj", "{D5A91231-24D0-499A-A99B-4285B06A4FBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,20 @@ Global
 		{8A6E394B-9B59-4BCC-8FC1-DE8AA2F33A12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A6E394B-9B59-4BCC-8FC1-DE8AA2F33A12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A6E394B-9B59-4BCC-8FC1-DE8AA2F33A12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDE72751-B36A-499E-81E4-7FB8951B67F5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9E2062FD-250F-4293-B679-B3FCE5878B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E2062FD-250F-4293-B679-B3FCE5878B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E2062FD-250F-4293-B679-B3FCE5878B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E2062FD-250F-4293-B679-B3FCE5878B5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A91231-24D0-499A-A99B-4285B06A4FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A91231-24D0-499A-A99B-4285B06A4FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A91231-24D0-499A-A99B-4285B06A4FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A91231-24D0-499A-A99B-4285B06A4FBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

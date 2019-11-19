@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Itse1430.MovieLib
 {
+    
     /// <summary>Represents movie data.</summary>
-    public class Movie
+    public class Movie : IValidatableObject
     {
         #region Properties
 
@@ -18,29 +18,39 @@ namespace Itse1430.MovieLib
         public int Id { get; set; }
 
         /// <summary>Gets or sets the title of the movie.</summary>
+        [RequiredAttribute(AllowEmptyStrings = false)]
         public string Title
         {
             //null coalescing
             // !String.IsNullOrEmpty(_title) ? _title : ""
-            get { return _title ?? ""; }
-            set { _title = value; }
+            //get { return _title ?? ""; }
+            get => _title ?? "";
+            set => _title = value;
+            //set { _title = value; }
         }
 
         /// <summary>Gets or sets the description of the movie.</summary>
         public string Description
         {
-            get { return _description ?? ""; }
-            set { _description = value; }
+            //get { return _description ?? ""; }
+            //set { _description = value; }
+            get => _description ?? "";
+            set => _description = value;
         }
 
         /// <summary>Gets or sets the rating of the movie.</summary>
+        [Required(AllowEmptyStrings = false)]
         public string Rating
         {
-            get { return _rating ?? ""; }
-            set { _rating = value; }
+            //get { return _rating ?? ""; }
+            //set { _rating = value; }
+            get => _rating ?? "";
+            set => _rating = value;
         }
 
-        /// <summary>Gets or sets the release year.</summary>        
+        /// <summary>Gets or sets the release year.</summary>      
+        [Display(Name = "Release Year")]
+        [Range(1900,Int32.MaxValue, ErrorMessage = "Release year must be >= 1900")]
         public int ReleaseYear { get; set; } = 1900; //Auto property
 
         //Full property
@@ -51,6 +61,7 @@ namespace Itse1430.MovieLib
         //}
 
         /// <summary>Gets or sets the run length.</summary>
+        [RangeAttribute(0,Int32.MaxValue, ErrorMessage = "Run length must be >= 0")]
         public int RunLength { get; set; }
         //{
         //    get { return _runLength; }
@@ -72,16 +83,19 @@ namespace Itse1430.MovieLib
 
         /// <summary>Determines if a movie is B&W.</summary>
         public bool IsBlackAndWhite
-        {
-            //Calculated property, no backing field
-            //Just calculating a value
-            get { return ReleaseYear <= ReleaseYearForColor; }
+            => ReleaseYear <= ReleaseYearForColor;
 
-            //Not settable by anyone
-            //set { }
-        }
+        //public bool IsBlackAndWhite
+        //{
+        //    //Calculated property, no backing field
+        //    //Just calculating a value
+        //    get => ReleaseYear <= ReleaseYearForColor; 
+        //    //Not settable by anyone
+        //    //set { }
+        //}
 
         //Mixed accessibility - property must be most visible
+        [Obsolete("Do not use", true)]
         public string TestAccessibility
         {
             //Single accessor can be more restrictive
@@ -93,36 +107,60 @@ namespace Itse1430.MovieLib
         #endregion
 
         public override string ToString ()
-        {
-            return $"{Title} ({ReleaseYear})";
-        }
-
+            => $"{Title} ({ReleaseYear})";
+        
         /// <summary>Validates the movie.</summary>
         /// <returns>An error message if validation fails or empty string otherwise.</returns>
-        public string Validate ()
-        {
-            //`this` is implicit first parameter, represents instance
-            //this.title == title
+        //public string Validate ()
+        //{
+        //    //`this` is implicit first parameter, represents instance
+        //    //this.title == title
 
-            //Name is required
-            if (String.IsNullOrEmpty (this.Title))
-                return "Title is required";
+        //    //Name is required
+        //    if (String.IsNullOrEmpty (this.Title))
+        //        return "Title is required";
+
+        //    //Release year >= 1900
+        //    if (ReleaseYear < 1900)
+        //        return "Release Year must be >= 1900";
+
+        //    //Run length >= 0
+        //    if (RunLength < 0)
+        //        return "Run Length must be >= 0";
+
+        //    //Rating is required
+        //    if (String.IsNullOrEmpty (Rating))
+        //        return "Rating is required";
+
+        //    return "";
+        //}
+
+        public IEnumerable<ValidationResult> Validate ( ValidationContext validationContext )
+        {
+            return Enumerable.Empty<ValidationResult> ();
+            //Iterator syntax
+            //var results = new List<ValidationResult> ()
 
             //Release year >= 1900
-            if (ReleaseYear < 1900)
-                return "Release Year must be >= 1900";
+                //results.Add(new ValidationResult("Release Year must be >= 1900"));
+               
 
             //Run length >= 0
-            if (RunLength < 0)
-                return "Run Length must be >= 0";
-
+                //results.Add(new ValidationResult("Run Length must be >= 0"));
+               
             //Rating is required
-            if (String.IsNullOrEmpty (Rating))
-                return "Rating is required";
+            //if (String.IsNullOrEmpty (Rating))
+                //results.Add(new ValidationResult( "Rating is required"));
+                //yield return new ValidationResult ("Release Year must be >= 1900");
 
-            return "";
+            //return results;
         }
+#if DEBUG
+        private void Foo ()
+        {
 
+        }
+#endif
         #region Private Members
 
         //Fields - data to be stored
@@ -137,4 +175,5 @@ namespace Itse1430.MovieLib
         //private readonly int _releaseYearForColor = 1939;
         #endregion
     }
+
 }

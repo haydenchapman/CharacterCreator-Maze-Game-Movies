@@ -1,108 +1,113 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Itse1430.MovieLib
-{   
-    /// <summary> Manages the movies in a database. </summary>
-    public class MovieDatabase
+{
+    /// <summary>Manages the movies in a database.</summary>
+    public abstract class MovieDatabase : IMovieDatabase
     {
         public Movie Add ( Movie movie )
         {
-            movie.Id = ++_id;
-            _movies.Add (movie);
+            //Validation
+            //if (movie == null)
+            //    return null;
 
-            return movie;
+            //throw new Exception ("Movie is null");
+            if (movie == null)
+                throw new ArgumentNullException (nameof (movie));
 
-            //Add to array
-            //for (var index = 0; index < _movies.Count; ++index)
-            //{
-            //    if (_movies[index] == null)
-            //    {
-            //        _movies[index] = movie;
-            //        return;
-            //    };
-            //};
+            //if (!String.IsNullOrEmpty(movie.Validate()))
+            //var context = new ValidationContext(movie);
+            //var results = movie.Validate(context);
+            var results = ObjectValidator.TryValidateObject (movie);
+            if (results.Count () > 0)
+                //return null;
+                throw new ValidationException (results.FirstOrDefault().ErrorMessage);
+
+            //Name must be unique
+            var existing = GetByNameCore (movie.Title);
+            if (existing != null)
+                //return null;
+                throw new ArgumentException ("Movie must be unique!");
+
+            return AddCore (movie);
         }
 
         public void Remove ( int id )
         {
-            var movie = FindMovie (id);
-            if (movie !=null) 
-            _movies.Remove (movie);
-
-            
-            //Remove from array
-            //for (var index = 0; index < _movies.Count; ++index)
-            //{
-            //    //This won't work
-            //    if (_movies[index] == movie)
-            //    {
-            //        _movies[index] = null;
-            //        return;
-            //    };
-            //};
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException (nameof (id), "ID must be > 0.");
+            //TODO: Validate ID
+            RemoveCore (id);
         }
 
-        public Movie[] GetAll ()
+        public Movie Get ( int id )
         {
-            //Filter out empty movies
-            //var count = 0;
-            //foreach (var movie in _movies)
-            //    if (movie != null)
-            //        ++count;
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException (nameof (id), "ID must be > 0.");
+            //TODO: Validate
+            if (id <= 0)
+                return null;
 
-            var index = 0;
-            var movies = new Movie[_movies.Count];
-            foreach (var movie in _movies)
-                if (movie != null)
-                    movies[index++] = movie;
-
-            return movies;
+            return GetCore (id);
         }
 
-        private Movie FindMovie (int id)
+        public IEnumerable<Movie> GetAll ()
         {
-            foreach (var movie in _movies)
-                if (movie.Id == id)
-                    return movie;
-
-            return null;
+            return GetAllCore () ?? Enumerable.Empty<Movie> ();
         }
 
-        public void Update(int id, Movie newMovie )
+        public void Update ( int id, Movie newMovie )
         {
-            var existing = FindMovie (id);
-            if (existing == null)
-                return;//TODO error
-                       //TODO: Change to update
+            //TODO: Validate
+            if (id <= 0)
+                    throw new ArgumentOutOfRangeException (nameof (id), "ID must be > 0.");
+            if (newMovie == null)
+                throw new ArgumentNullException (nameof (newMovie));
+            //if (!String.IsNullOrEmpty(movie.Validate()))
+            //var context = new ValidationContext(newMovie);
+            //var results = newMovie.Validate(context);
+            var results = ObjectValidator.TryValidateObject (newMovie);
+            if (results.Count () > 0)
+                throw new ValidationException (results.FirstOrDefault ().ErrorMessage);
 
-            //update existing movie
-            existing.Description = newMovie.Description;
-            existing.HasSeen = newMovie.HasSeen;
-            existing.Rating = newMovie.Rating;
-            existing.ReleaseYear = newMovie.ReleaseYear;
-            existing.RunLength = newMovie.ReleaseYear;
-            existing.Title = newMovie.Title;
+            //Must be unique
+            var existing = GetByNameCore (newMovie.Title);
+            if (existing != null && existing.Id != id)
+                throw new ArgumentException ("Movie must be unqiue!");
 
-
-           // _movie.Remove (movie);
-            //RemoveMovie(form.Movie);
-           // _movie.Add (form.Movie);
+            try
+            {
+                UpdateCore (id, newMovie);
+            }catch (IOException ex)
+            {
+                throw new Exception ("An error occured updating the movie", ex);
+            };
+            //UpdateCore (id, newMovie);
         }
 
-        public Movie get (int id)
-        {
-            return FindMovie (id);
+        /// <summary>Add a movie to database.</summary>
+        /// <param name="movie">Movie to add.</param>
+        /// <returns>Updated movie.</returns>
+        protected abstract Movie AddCore ( Movie movie );
+
+        protected abstract Movie GetCore ( int id );
+
+        protected abstract IEnumerable<Movie> GetAllCore ();
+
+        protected abstract Movie GetByNameCore ( string name );
+
+        protected abstract void RemoveCore ( int id );
+
+        protected abstract Movie UpdateCore ( int id, Movie newMovie );
+
+        //return _movies.Select(m => Clone(new Movie(), m));
+        //foreach (var movie in _movies)
+        //yield return Clone(new Movie(), movie);            
         }
-
-        //private Movie[] _movies = new Movie[100];
-        private List<Movie> _movies = new List<Movie> ();
-
-        //
-        private int _id = 0;
     }
 
-}
+

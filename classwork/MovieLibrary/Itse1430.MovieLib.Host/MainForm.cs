@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
+using System.Linq;
 using System.Windows.Forms;
+using Itse._1430.MovieLib.SqlServer;
+using Itse1430.MovieLib.IO;
 
 namespace Itse1430.MovieLib.Host
 {
@@ -16,6 +21,20 @@ namespace Itse1430.MovieLib.Host
             //movie.Description = movie.Title;
         }
 
+        protected override void OnLoad ( EventArgs e )
+        {
+            base.OnLoad (e);
+            var connString = ConfigurationManager.ConnectionStrings["MovieDatabase"];
+            //_movies = new FileMovieDatabase (@"movies.csv");
+            _movies = new SqlMovieDatabase (connString.ConnectionString);
+            //var count = _movies.GetAll ().Count ();
+            //if (count == 0)
+            //    //MovieDatabaseExtensions.Seed (_movies);
+            //    _movies.Seed ();
+
+            UpdateUI ();
+        }
+
         //Called when Movie\Add selected
         private void OnMovieAdd ( object sender, EventArgs e )
         {
@@ -27,8 +46,25 @@ namespace Itse1430.MovieLib.Host
             //Show the new movie form modally
             if (form.ShowDialog (this) == DialogResult.OK)
             {
-                _movies.Add (form.Movie);
-                UpdateUI ();
+                try
+                {
+                    _movies.Add (form.Movie);
+                    UpdateUI ();
+                } catch (ArgumentException ex)
+                {
+                    //Recovery
+                    MessageBox.Show (ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch (ValidationException ex)
+                {
+                    //Recovery
+                    MessageBox.Show (ex.Message, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch (Exception ex)
+                {
+                    //Recovery
+                    MessageBox.Show ("Save Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    //throw;
+                };
             };
         }
 
@@ -40,6 +76,11 @@ namespace Itse1430.MovieLib.Host
 
             //Movie or null
             return item as Movie;
+
+            //var firstMovie = _lstMovies.SelectedItems
+            //                          .OfType<Movie> ()
+            //                          .FirstOrDefault ();
+
 
             //old approach1
             //var tempVar = item as Movie;
@@ -122,21 +163,50 @@ namespace Itse1430.MovieLib.Host
             form.ShowDialog (this);
         }
 
+        //private string OrderByTitle(Movie movie )
+        //{
+        //    return movie.Title;
+        //}
+        //private int OrderByReleaseYear(Movie movie )
+        //{
+        //    return movie.ReleaseYear;
+        //}
         private void UpdateUI ()
         {
-            var movies = _movies.GetAll ();
+            var movies = from m in _movies.GetAll ()
+                         orderby m.Title, m.ReleaseYear
+                         select m;
+
+            //var movies = _movies.GetAll ()
+            //                    //.OrderBy (OrderByTitle)
+            //                    .OrderBy(m => m.Title)
+            //                    //.ThenBy (OrderByReleaseYear)
+            //                    .ThenBy (m => m.ReleaseYear);
+
+            PlayWithEnumerable (movies);
 
             //Programmatic approach
             //_lstMovies.Items.Clear ();
             //_lstMovies.Items.AddRange (movies);
 
-            _lstMovies.DataSource = movies;
+            _lstMovies.DataSource = movies.ToArray();
+        }
+
+        private void PlayWithEnumerable ( IEnumerable<Movie> movies )
+        {
+            Movie firstOne = movies.FirstOrDefault ();
+            Movie lastOne = movies.LastOrDefault ();
+            //Movie onlyOne = movies.SingleOrDefault();
+
+            //var coolMovies = movies.Where (m => m.ReleaseYear > 1979 && m.ReleaseYear < 2000);
+            int id = 1;
+            var otherMovies = movies.Where (m => m.Id > ++id);
         }
 
         //private Movie[] _movies = new Movie[100];
         //private List<Movie> _movies = new List<Movie>();
 
-        private MovieDatabase _movies = new MovieDatabase ();
+        private IMovieDatabase _movies;
 
         private void MainForm_Load ( object sender, EventArgs e )
         {
